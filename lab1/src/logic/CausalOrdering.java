@@ -21,7 +21,7 @@ public class CausalOrdering extends UnicastRemoteObject implements CausalOrderin
     private int[] vectorClock;
     private int processId;
 
-    protected CausalOrdering(int processId) throws RemoteException {
+    public CausalOrdering(int processId) throws RemoteException {
         this.processId = processId;
         this.vectorClock = new int[NUM_PROCESSES];
 
@@ -45,6 +45,7 @@ public class CausalOrdering extends UnicastRemoteObject implements CausalOrderin
     public void broadcast(Message m, long[] delay) throws RemoteException {
         vectorClock[processId]++;
         m.prepareMessage(processId, vectorClock);
+        System.out.println(String.format("sending message %s", m));
         new Thread(() -> {
             for (int i = 0; i < processes.size(); i++) {
                 try {
@@ -96,5 +97,17 @@ public class CausalOrdering extends UnicastRemoteObject implements CausalOrderin
             System.out.println(String.format("Process %d is not ready for message %s", processId, m));
             receivedMessages.add(m);
         }
+    }
+
+    public ArrayList<Message> getReceivedMessages() {
+        return receivedMessages;
+    }
+
+    public ArrayList<Message> getDeliveredMessages() {
+        return deliveredMessages;
+    }
+
+    public int[] getVectorClock() {
+        return vectorClock;
     }
 }

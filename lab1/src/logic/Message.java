@@ -17,7 +17,7 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return "logic.Message{" +
+        return "logic.Message{ vector='" + Arrays.toString(vector) + "'" +
                 ", content='" + content + '\'' +
                 '}';
     }
