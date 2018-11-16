@@ -68,14 +68,15 @@ public class CausalOrdering extends UnicastRemoteObject implements CausalOrderin
     }
 
     public int[] incrementClock(int[] clock, int processId) {
-        clock[processId]++;
-        return clock;
+        int[] copy = Arrays.copyOf(clock, clock.length);
+        copy[processId]++;
+        return copy;
     }
 
     public void deliver(Message m) {
         deliveredMessages.add(m);
-        if(processId != m.getSenderId())
-            vectorClock[m.getSenderId()]++; //TODO: ?
+        if(processId != m.getSenderId())    //Process is sending the message to itself
+            vectorClock[m.getSenderId()]++; //But it shouldn't increment twice
         receivedMessages.remove(m);
         System.out.println(String.format("Process %d delivered message %s", processId, m));
     }
